@@ -30,10 +30,18 @@ pub fn write(self: *HelpMessageWriter) !void {
     try self.writeHeader();
     try self.writePositionalArgs();
     try self.writeSubcommands();
+    try self.writeExtraInformation();
     try self.writeOptions();
     try self.writeFooter();
 
     try self.buffer.flush();
+}
+
+fn writeExtraInformation(self: *HelpMessageWriter) !void {
+    const writer = self.buffer.writer();
+    for (self.command.deref().extraInformation.items) |extras| {
+        try writer.print("{s}\n", .{extras});
+    }
 }
 
 fn writeDescription(self: *HelpMessageWriter) !void {

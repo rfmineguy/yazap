@@ -23,6 +23,7 @@ allocator: Allocator,
 name: []const u8,
 description: ?[]const u8,
 positional_args: ArrayList(Arg),
+extraInformation: ArrayList([]const u8),
 options: ArrayList(Arg),
 subcommands: ArrayList(Command),
 properties: EnumSet(Property) = .{},
@@ -49,6 +50,7 @@ pub fn init(allocator: Allocator, name: []const u8, description: ?[]const u8) Co
         .positional_args = ArrayList(Arg).init(allocator),
         .options = ArrayList(Arg).init(allocator),
         .subcommands = ArrayList(Command).init(allocator),
+        .extraInformation = ArrayList([]const u8).init(allocator),
     };
 }
 
@@ -61,6 +63,10 @@ pub fn deinit(self: *Command) void {
         subcommand.deinit();
     }
     self.subcommands.deinit();
+}
+
+pub fn addExtra(self: *Command, extra: []const u8) !void {
+    try self.extraInformation.append(extra);
 }
 
 /// Appends the new argument to the list of arguments.
